@@ -1,0 +1,45 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ACTION_STATUS {
+  Succeeded
+  Failed
+}
+
+enum ACTION_TYPE {
+  Login
+  Logout
+  Create_Incident
+  Update_Data
+  Delete_User
+  Invite_User
+}
+
+model User {
+  id               String   @id @default(cuid())
+  name             String
+  email            String   @unique
+  password         String
+  created_actions  Action[] @relation("actor")
+  received_actions Action[] @relation("target")
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model Action {
+  id        String        @id @default(cuid())
+  type      ACTION_TYPE
+  status    ACTION_STATUS
+  actorId   String
+  actor     User          @relation("actor", fields: [actorId], references: [id])
+  targetId  String?
+  target    User?         @relation("target", fields: [targetId], references: [id])
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+}
