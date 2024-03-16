@@ -41,8 +41,7 @@ model Action {
   actor     User          @relation("actor", fields: [actorId], references: [id])
   targetId  String?
   target    User?         @relation("target", fields: [targetId], references: [id])
-  logId     String
-  log       Log           @relation(fields: [logId], references: [id])
+  Log       Log?
   createdAt DateTime      @default(now())
   updatedAt DateTime      @updatedAt
 }
@@ -51,7 +50,8 @@ model Log {
   id        String   @id @default(cuid())
   userId    String
   user      User     @relation(fields: [userId], references: [id])
-  actions   Action[]
+  action    Action?  @relation(fields: [actionId], references: [id])
+  actionId  String   @unique
   location  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

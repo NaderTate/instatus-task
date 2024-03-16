@@ -6,20 +6,21 @@ export async function POST(request: Request) {
   const { userId, action, location }: LogBody = await request.json();
 
   try {
+    const Action = await prisma.action.create({
+      data: {
+        type: action.type,
+        status: action.status,
+        actorId: action.actorId,
+        targetId: action.targetId,
+      },
+    });
     const log = await prisma.log.create({
       data: {
         userId,
-        actions: {
-          create: {
-            type: action.type,
-            status: action.status,
-            actorId: action.actorId,
-            targetId: action.targetId,
-          },
-        },
+        actionId: Action.id,
         location,
       },
-      include: { actions: true, user: true },
+      include: { action: true, user: true },
     });
 
     return NextResponse.json(log);
@@ -38,48 +39,53 @@ export async function GET(request: NextRequest) {
   const targetId = searchParams.get("targetId");
 
   const logs = actorId
-    ? await prisma.log.findUnique({
-        where: { id: actorId },
+    ? await prisma.log.findFirst({
+        where: { action: { actorId } },
         include: {
-          actions: true,
+          action: true,
+          user: true,
         },
       })
     : actionId
     ? await prisma.log.findFirst({
-        where: { actions: { some: { id: actionId } } },
+        where: { actionId },
         include: {
-          actions: true,
+          action: true,
         },
       })
     : targetId
     ? await prisma.log.findFirst({
-        where: { actions: { some: { targetId } } },
+        where: { action: { targetId } },
         include: {
-          actions: true,
+          action: true,
         },
       })
     : await prisma.log.findMany({
         where: {
           OR: [
             {
-              actions: {
-                some: {
-                  actor: {
-                    name: {
-                      contains: search ?? undefined,
-                      mode: "insensitive",
-                    },
+              action: {
+                actor: {
+                  name: {
+                    contains: search ?? undefined,
+                    mode: "insensitive",
                   },
                 },
               },
             },
-            {},
+            {
+              action: {
+                actor: {
+                  email: { contains: search ?? undefined, mode: "insensitive" },
+                },
+              },
+            },
           ],
         },
         take: 30,
         skip: page ? parseInt(page) : 0,
         include: {
-          actions: true,
+          action: { include: { actor: true, target: true } },
         },
       });
   return NextResponse.json(logs);
