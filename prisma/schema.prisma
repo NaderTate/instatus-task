@@ -26,6 +26,7 @@ model User {
   name             String
   email            String   @unique
   password         String
+  logs             Log[]
   created_actions  Action[] @relation("actor")
   received_actions Action[] @relation("target")
   createdAt        DateTime @default(now())
@@ -40,6 +41,18 @@ model Action {
   actor     User          @relation("actor", fields: [actorId], references: [id])
   targetId  String?
   target    User?         @relation("target", fields: [targetId], references: [id])
+  logId     String
+  log       Log           @relation(fields: [logId], references: [id])
   createdAt DateTime      @default(now())
   updatedAt DateTime      @updatedAt
+}
+
+model Log {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  actions   Action[]
+  location  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
