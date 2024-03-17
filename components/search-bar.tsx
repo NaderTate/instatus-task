@@ -1,15 +1,16 @@
 "use client";
 
-import { useState } from "react";
 import { useSWRConfig } from "swr";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-import { CiSearch } from "react-icons/ci";
 import { IoIosDownload } from "react-icons/io";
 import { IoFilterSharp } from "react-icons/io5";
+import SearchInput from "./search-input";
 
 const SearchBar = () => {
   const router = useRouter();
+
   const [showFilters, setShowFilters] = useState(false);
 
   const { mutate } = useSWRConfig();
@@ -46,24 +47,9 @@ const SearchBar = () => {
       </div>
       {showFilters && (
         <div className=" w-full flex flex-wrap gap-5 mt-5">
-          <div className="relative flex">
-            <input
-              className="rounded-[8px] border border-[#E0E0DF] bg-transparent p-3"
-              placeholder="actor id"
-            />
-            <CiSearch
-              className="absolute top-0 bottom-0 right-5 m-auto cursor-pointer text-[#575757]"
-              size={20}
-            />
-          </div>
-          <input
-            className="rounded-[8px] border border-[#E0E0DF] bg-transparent p-3"
-            placeholder="target id"
-          />
-          <input
-            className="rounded-[8px] border border-[#E0E0DF] bg-transparent p-3"
-            placeholder="action id"
-          />
+          <SearchInput query="actorId" placeholder="actor Id" />
+          <SearchInput query="targetId" placeholder="target Id" />
+          <SearchInput query="actionId" placeholder="action Id" />
         </div>
       )}
     </div>

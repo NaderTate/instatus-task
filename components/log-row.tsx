@@ -1,7 +1,10 @@
-import { FullLog } from "@/types";
-import { format } from "date-fns";
 import { useState } from "react";
+import { format } from "date-fns";
+
 import LogMoreDetails from "./log-more-details";
+
+import { FullLog } from "@/types";
+
 const LogRow = ({ log }: { log: FullLog }) => {
   const [showMore, setShowMore] = useState(false);
 

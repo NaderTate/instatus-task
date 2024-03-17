@@ -37,56 +37,88 @@ export async function GET(request: NextRequest) {
   const actorId = searchParams.get("actorId");
   const actionId = searchParams.get("actionId");
   const targetId = searchParams.get("targetId");
+  if (actorId) {
+    const log = await prisma.log.findFirst({
+      where: { action: { actorId } },
+      include: {
+        action: { include: { actor: true, target: true } },
+      },
+    });
+    if (log) return NextResponse.json({ logs: [log], count: 1 });
+    return NextResponse.json({ logs: null });
+  }
+  if (actionId) {
+    const log = await prisma.log.findFirst({
+      where: { actionId },
+      include: {
+        action: { include: { actor: true, target: true } },
+      },
+    });
+    if (log) return NextResponse.json({ logs: [log], count: 1 });
+    return NextResponse.json({ logs: null });
+  }
+  if (targetId) {
+    const log = await prisma.log.findFirst({
+      where: { action: { targetId } },
+      include: {
+        action: { include: { actor: true, target: true } },
+      },
+    });
+    if (log) return NextResponse.json({ logs: [log], count: 1 });
+    return NextResponse.json({ logs: null });
+  }
+  const logs = await prisma.log.findMany({
+    where: {
+      OR: [
+        {
+          action: {
+            actor: {
+              name: {
+                contains: search ?? undefined,
+                mode: "insensitive",
+              },
+            },
+          },
+        },
+        {
+          action: {
+            actor: {
+              email: { contains: search ?? undefined, mode: "insensitive" },
+            },
+          },
+        },
+      ],
+    },
+    take: 3,
+    skip: page ? (parseInt(page) - 1) * 3 : 0,
+    include: {
+      action: { include: { actor: true, target: true } },
+    },
+    orderBy: { createdAt: "desc" },
+  });
 
-  const logs = actorId
-    ? await prisma.log.findFirst({
-        where: { action: { actorId } },
-        include: {
-          action: true,
-          user: true,
-        },
-      })
-    : actionId
-    ? await prisma.log.findFirst({
-        where: { actionId },
-        include: {
-          action: true,
-        },
-      })
-    : targetId
-    ? await prisma.log.findFirst({
-        where: { action: { targetId } },
-        include: {
-          action: true,
-        },
-      })
-    : await prisma.log.findMany({
-        where: {
-          OR: [
-            {
-              action: {
-                actor: {
-                  name: {
-                    contains: search ?? undefined,
-                    mode: "insensitive",
-                  },
-                },
+  const count = await prisma.log.count({
+    where: {
+      OR: [
+        {
+          action: {
+            actor: {
+              name: {
+                contains: search ?? undefined,
+                mode: "insensitive",
               },
             },
-            {
-              action: {
-                actor: {
-                  email: { contains: search ?? undefined, mode: "insensitive" },
-                },
-              },
+          },
+        },
+        {
+          action: {
+            actor: {
+              email: { contains: search ?? undefined, mode: "insensitive" },
             },
-          ],
+          },
         },
-        take: 30,
-        skip: page ? parseInt(page) : 0,
-        include: {
-          action: { include: { actor: true, target: true } },
-        },
-      });
-  return NextResponse.json(logs);
+      ],
+    },
+  });
+  return NextResponse.json({ logs, count });
 }
