@@ -22,6 +22,7 @@ const ExportBtn = () => {
 
   return (
     <CSVLink
+      filename="logs.csv"
       className="text-[#575757] text-xs px-2 flex items-center gap-x-2 border border-[#E0E0DF]"
       data={csvData}
     >

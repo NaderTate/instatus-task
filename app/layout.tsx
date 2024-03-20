@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import "./globals.css";
 import { Inter } from "next/font/google";
 
@@ -17,7 +18,8 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <div className="flex flex-col items-center max-w-7xl p-10 mx-auto">
-          {children}
+          {" "}
+          <Suspense fallback="Loading...">{children}</Suspense>
         </div>
       </body>
     </html>

@@ -2,6 +2,7 @@
 
 import useSWR from "swr";
 import { NextPage } from "next";
+import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 
 import DataTable from "@/components/data-table";
