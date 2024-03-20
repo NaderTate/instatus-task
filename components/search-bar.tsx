@@ -8,6 +8,7 @@ import ExportBtn from "./export-btn";
 import SearchInput from "./search-input";
 
 import { IoFilterSharp } from "react-icons/io5";
+import LivemodeBtn from "./livemode-btn";
 
 const SearchBar = () => {
   const router = useRouter();
@@ -36,10 +37,7 @@ const SearchBar = () => {
           FILTERS
         </button>
         <ExportBtn />
-        <button className="text-[#575757] rounded-r-[15px] text-xs px-2 flex items-center gap-x-2 border border-[#E0E0DF]">
-          <div className="rounded-full bg-[#8F485D] w-3 h-3"></div>
-          LIVE
-        </button>
+        <LivemodeBtn />
       </div>
       {showFilters && (
         <div className=" w-full flex flex-wrap gap-5 mt-5">
