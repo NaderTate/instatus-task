@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import LogRow from "./log-row";
 
 import { FullLog } from "@/types";
+import { useData } from "@/store";
 
 interface DataTableProps {
   logs: FullLog[] | null;
@@ -13,9 +14,11 @@ interface DataTableProps {
 }
 
 const DataTable = ({ logs, count, search }: DataTableProps) => {
-  const [data, setData] = useState<FullLog[] | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
+
+  const { data, setData } = useData();
+
   const hasMore = data && data.length < count;
 
   const fetchData = async () => {
@@ -45,7 +48,7 @@ const DataTable = ({ logs, count, search }: DataTableProps) => {
 
   useEffect(() => {
     setData(logs);
-  }, [logs]);
+  }, [logs, setData]);
 
   return (
     <>

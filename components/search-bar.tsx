@@ -1,12 +1,13 @@
 "use client";
 
-import { useSWRConfig } from "swr";
 import { useState } from "react";
+import { useSWRConfig } from "swr";
 import { useRouter } from "next/navigation";
 
-import { IoIosDownload } from "react-icons/io";
-import { IoFilterSharp } from "react-icons/io5";
+import ExportBtn from "./export-btn";
 import SearchInput from "./search-input";
+
+import { IoFilterSharp } from "react-icons/io5";
 
 const SearchBar = () => {
   const router = useRouter();
@@ -34,12 +35,7 @@ const SearchBar = () => {
           <IoFilterSharp size={20} />
           FILTERS
         </button>
-
-        <button className="text-[#575757] text-xs px-2 flex items-center gap-x-2 border border-[#E0E0DF]">
-          <IoIosDownload size={20} />
-          EXPORT
-        </button>
-
+        <ExportBtn />
         <button className="text-[#575757] rounded-r-[15px] text-xs px-2 flex items-center gap-x-2 border border-[#E0E0DF]">
           <div className="rounded-full bg-[#8F485D] w-3 h-3"></div>
           LIVE
