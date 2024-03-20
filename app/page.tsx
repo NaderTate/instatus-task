@@ -18,11 +18,11 @@ const HomePage: NextPage = () => {
 
   const fetcher = async () => {
     const response = await fetch(
-      `http://localhost:3000/api/logs?${search ? `search=${search}` : ""}&${
-        actorId ? `actorId=${actorId}` : ""
-      }&${targetId ? `targetId=${targetId}` : ""}&${
-        actionId ? `actionId=${actionId}` : ""
-      }`,
+      `${process.env.NEXT_PUBLIC_URL}/api/logs?${
+        search ? `search=${search}` : ""
+      }&${actorId ? `actorId=${actorId}` : ""}&${
+        targetId ? `targetId=${targetId}` : ""
+      }&${actionId ? `actionId=${actionId}` : ""}`,
       {
         next: { revalidate: 0 },
       }

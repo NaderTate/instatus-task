@@ -23,7 +23,7 @@ const DataTable = ({ logs, count, search }: DataTableProps) => {
 
   const fetchData = async () => {
     const response = await fetch(
-      `http://localhost:3000/api/logs?${
+      `${process.env.NEXT_PUBLIC_URL}/api/logs?${
         search ? `search=${search}` : ""
       }&page=${currentPage + 1}`,
       {
